@@ -1,0 +1,44 @@
+.loading { padding: 2rem 1.5rem; max-width: 1400px; margin: 0 auto; }
+
+.loading__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.loading__skeleton { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+
+.loading__skeleton-image {
+  width: 100%; padding-top: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.loading__skeleton-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
+
+.loading__skeleton-line {
+  height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  width: 100%;
+}
+.loading__skeleton-line--short { width: 30%; }
+.loading__skeleton-line--medium { width: 60%; }
+.loading__skeleton-line--long { width: 80%; }
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+@media (max-width: 600px) {
+  .loading { padding: 1rem; }
+  .loading__grid { grid-template-columns: 1fr; gap: 1rem; }
+}

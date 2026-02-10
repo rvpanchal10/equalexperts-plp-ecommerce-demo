@@ -1,0 +1,41 @@
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-bar__btn {
+  padding: 0.45rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  background: #fff;
+  color: #555;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.filter-bar__btn:hover {
+  border-color: #0096d6;
+  color: #0096d6;
+}
+
+.filter-bar__btn:focus-visible {
+  outline: 2px solid #0096d6;
+  outline-offset: 2px;
+}
+
+.filter-bar__btn--active {
+  background: #0096d6;
+  border-color: #0096d6;
+  color: #fff;
+}
+
+.filter-bar__btn--active:hover {
+  background: #007bb5;
+  border-color: #007bb5;
+  color: #fff;
+}

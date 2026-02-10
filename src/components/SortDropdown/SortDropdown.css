@@ -1,0 +1,34 @@
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.sort-dropdown__label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #666;
+  white-space: nowrap;
+}
+
+.sort-dropdown__select {
+  padding: 0.55rem 2rem 0.55rem 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #2d2d2d;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.sort-dropdown__select:focus { border-color: #0096d6; }
+.sort-dropdown__select:hover { border-color: #bbb; }
+
+
+@media (max-width: 600px) {
+  .sort-dropdown { justify-content: flex-end; }
+}
