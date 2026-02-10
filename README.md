@@ -1,4 +1,4 @@
-# 🛒 Equal Experts — Product Listing Page 🏷️
+# 🛒 Product Listing Page 🏷️
 
 A responsive, accessible e-commerce Product Listing Page with search, filtering, sorting, infinite scroll, and cart management.
 
@@ -30,8 +30,8 @@ Built with **React 18** · **TypeScript** · **Vite 6** · **Vitest**
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/EqualExperts-Assignments/equal-experts-outstanding-logical-tenacious-curiosity-66c652d9c9ae.git equalexperts-plp
-cd equalexperts-plp
+git clone https://github.com/rvpanchal10/equalexperts-plp-ecommerce-demo.git plp-ecommerce-demo
+cd plp-ecommerce-demo
 ```
 
 ### 2. Install Dependencies
@@ -49,7 +49,7 @@ yarn install
 ### 3. Project Structure
 
 ```
-equalexperts-plp/
+plp-ecommerce-demo/
 ├── .gitignore
 ├── README.md
 ├── index.html                              
