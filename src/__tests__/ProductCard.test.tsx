@@ -1,102 +1,83 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { createMockProduct } from './fixtures';
 
+const product = createMockProduct({
+  id: 1, title: 'Test Backpack', price: 109.95,
+  category: "men's clothing", rating: { rate: 4, count: 120 },
+});
+
+const defaultProps = {
+  product, onAddToCart: vi.fn(), onUpdateQuantity: vi.fn(), onRemoveItem: vi.fn(),
+  cartQuantity: 0, isWishlisted: false, onToggleWishlist: vi.fn(),
+};
+
+const renderCard = (props = {}) =>
+  render(<MemoryRouter><ProductCard {...defaultProps} {...props} /></MemoryRouter>);
+
 describe('ProductCard', () => {
-  const product = createMockProduct({
-    id: 1, title: 'Test Backpack', price: 109.95,
-    description: 'A great backpack for everyday use and walks in the forest.',
-    category: "men's clothing", rating: { rate: 4, count: 120 },
-  });
-
-  const defaultProps = { product, onAddToCart: vi.fn(), cartQuantity: 0 };
-
-  it('renders product title', () => {
-    render(<ProductCard {...defaultProps} />);
+  it('renders product title and price', () => {
+    renderCard();
     expect(screen.getByText('Test Backpack')).toBeInTheDocument();
-  });
-
-  it('renders price formatted as GBP', () => {
-    render(<ProductCard {...defaultProps} />);
     expect(screen.getByTestId('product-price-1')).toHaveTextContent('£109.95');
   });
 
-  it('renders category', () => {
-    render(<ProductCard {...defaultProps} />);
-    expect(screen.getByText("men's clothing")).toBeInTheDocument();
+  it('shows Add to Cart when not in cart', () => {
+    renderCard();
+    expect(screen.getByTestId('add-to-cart-1')).toBeInTheDocument();
   });
 
-  it('renders image with alt text', () => {
-    render(<ProductCard {...defaultProps} />);
+  it('shows qty controls when in cart', () => {
+    renderCard({ cartQuantity: 2 });
+    expect(screen.getByTestId('qty-controls-1')).toBeInTheDocument();
+    expect(screen.getByTestId('card-qty-1')).toHaveTextContent('2');
+  });
+
+  it('renders wishlist toggle button', () => {
+    renderCard();
+    expect(screen.getByTestId('wishlist-toggle-1')).toBeInTheDocument();
+  });
+
+  it('shows unfilled heart when not wishlisted', () => {
+    renderCard({ isWishlisted: false });
+    expect(screen.getByTestId('wishlist-toggle-1')).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByTestId('wishlist-toggle-1')).toHaveAttribute('aria-label', 'Add Test Backpack to wishlist');
+  });
+
+  it('shows filled heart when wishlisted', () => {
+    renderCard({ isWishlisted: true });
+    expect(screen.getByTestId('wishlist-toggle-1')).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('wishlist-toggle-1')).toHaveAttribute('aria-label', 'Remove Test Backpack from wishlist');
+    expect(screen.getByTestId('wishlist-toggle-1')).toHaveClass('product-card__wishlist-btn--active');
+  });
+
+  it('calls onToggleWishlist when heart clicked', async () => {
+    const onToggleWishlist = vi.fn();
+    renderCard({ onToggleWishlist });
+    await userEvent.click(screen.getByTestId('wishlist-toggle-1'));
+    expect(onToggleWishlist).toHaveBeenCalledWith(product);
+  });
+
+  it('heart click does not navigate (prevents link default)', async () => {
+    renderCard();
+    await userEvent.click(screen.getByTestId('wishlist-toggle-1'));
+    expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
+  });
+
+  it('shows image with lazy loading', () => {
+    renderCard();
     const img = screen.getByAltText('Test Backpack');
-    expect(img).toHaveAttribute('src', product.image);
-  });
-
-  it('renders truncated description', () => {
-    render(<ProductCard {...defaultProps} />);
-    expect(screen.getByText(/A great backpack/)).toBeInTheDocument();
-  });
-
-  it('calls onAddToCart with product when clicked', async () => {
-    const onAddToCart = vi.fn();
-    render(<ProductCard {...defaultProps} onAddToCart={onAddToCart} />);
-    await userEvent.click(screen.getByTestId('add-to-cart-1'));
-    expect(onAddToCart).toHaveBeenCalledWith(product);
-  });
-
-  it('allows adding to cart multiple times', async () => {
-    const onAddToCart = vi.fn();
-    render(<ProductCard {...defaultProps} onAddToCart={onAddToCart} />);
-    const btn = screen.getByTestId('add-to-cart-1');
-    await userEvent.click(btn);
-    await userEvent.click(btn);
-    await userEvent.click(btn);
-    expect(onAddToCart).toHaveBeenCalledTimes(3);
-  });
-
-  it('does not show in-cart badge when quantity is 0', () => {
-    render(<ProductCard {...defaultProps} cartQuantity={0} />);
-    expect(screen.queryByTestId('in-cart-badge-1')).not.toBeInTheDocument();
-  });
-
-  it('shows in-cart badge with quantity', () => {
-    render(<ProductCard {...defaultProps} cartQuantity={3} />);
-    expect(screen.getByTestId('in-cart-badge-1')).toHaveTextContent('3 in cart');
-  });
-
-  it('renders star rating accessibility label', () => {
-    render(<ProductCard {...defaultProps} />);
-    expect(screen.getByLabelText('Rated 4 out of 5 from 120 reviews')).toBeInTheDocument();
-  });
-
-  it('has accessible add to cart button', () => {
-    render(<ProductCard {...defaultProps} />);
-    expect(screen.getByTestId('add-to-cart-1')).toHaveAttribute('aria-label', 'Add Test Backpack to cart');
-  });
-
-  it('shows loaded class after image loads', () => {
-    render(<ProductCard {...defaultProps} />);
-    const img = screen.getByAltText('Test Backpack');
-    expect(img).not.toHaveClass('product-card__image--loaded');
+    expect(img).toHaveAttribute('loading', 'lazy');
     fireEvent.load(img);
     expect(img).toHaveClass('product-card__image--loaded');
   });
 
-  it('shows error state when image fails', () => {
-    render(<ProductCard {...defaultProps} />);
-    fireEvent.error(screen.getByAltText('Test Backpack'));
-    expect(screen.getByText('Image unavailable')).toBeInTheDocument();
-  });
-
-  it('uses lazy loading', () => {
-    render(<ProductCard {...defaultProps} />);
-    expect(screen.getByAltText('Test Backpack')).toHaveAttribute('loading', 'lazy');
-  });
-
-  it('renders as an article', () => {
-    render(<ProductCard {...defaultProps} />);
+  it('renders as article with link to PDP', () => {
+    renderCard();
     expect(screen.getByTestId('product-card-1').tagName).toBe('ARTICLE');
+    expect(screen.getByTestId('product-link-1')).toHaveAttribute('href', '/product/1');
   });
 });

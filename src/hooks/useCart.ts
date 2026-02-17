@@ -1,5 +1,8 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { CartItem, Product } from '../types';
+import { getStorageItem, setStorageItem } from '../utils/storage';
+
+const CART_STORAGE_KEY = 'cart';
 
 interface UseCartResult {
   items: CartItem[];
@@ -13,7 +16,11 @@ interface UseCartResult {
 }
 
 export function useCart(): UseCartResult {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(getStorageItem(CART_STORAGE_KEY) || []);
+
+  useEffect(() => {
+    setStorageItem(CART_STORAGE_KEY, items);
+  }, [items]);
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {

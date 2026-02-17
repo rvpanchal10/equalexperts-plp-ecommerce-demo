@@ -15,10 +15,10 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
     return () => clearTimeout(timeout);
   }, [localValue, onChange]);
 
-  // Sync external resets
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
+  // // Sync external resets
+  // useEffect(() => {
+  //   setLocalValue(value);
+  // }, [value]);
 
   return (
     <div className="search-bar">
