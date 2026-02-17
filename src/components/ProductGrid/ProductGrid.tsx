@@ -6,11 +6,15 @@ interface ProductGridProps {
   products: Product[];
   onAddToCart: (product: Product) => void;
   getItemQuantity: (productId: number) => number;
+  onUpdateQuantity: (productId: number, quantity: number) => void;
+  onRemoveItem: (productId: number) => void;
   totalCount: number;
   visibleCount: number;
   hasMore: boolean;
   sentinelRef: (node: HTMLDivElement | null) => void;
   onResetFilters: () => void;
+  isInWishlist: (productId: number) => boolean;
+  onToggleWishlist: (product: Product) => void;
 }
 
 export default function ProductGrid({
@@ -22,6 +26,10 @@ export default function ProductGrid({
   hasMore,
   sentinelRef,
   onResetFilters,
+  onUpdateQuantity,
+  onRemoveItem,
+  isInWishlist,
+  onToggleWishlist
 }: ProductGridProps) {
   if (products.length === 0) {
     return (
@@ -49,6 +57,10 @@ export default function ProductGrid({
             product={product}
             onAddToCart={onAddToCart}
             cartQuantity={getItemQuantity(product.id)}
+            onUpdateQuantity={onUpdateQuantity}
+            onRemoveItem={onRemoveItem}
+            isWishlisted={isInWishlist(product.id)}
+            onToggleWishlist={onToggleWishlist}
           />
         ))}
       </div>

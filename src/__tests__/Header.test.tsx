@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import Header from '../components/Header';
 
 describe('Header', () => {
-  const defaultProps = { totalItems: 0, onCartClick: vi.fn() };
+  const defaultProps = { totalItems: 0, onCartClick: vi.fn(), wishlistCount: 0, onWishlistClick: vi.fn() };
 
   it('renders logo and title', () => {
     render(<Header {...defaultProps} />);
@@ -53,6 +53,34 @@ describe('Header', () => {
       'aria-label',
       'Shopping cart with 1 item'
     );
+  });
+
+
+  it('does not show wishlist badge when empty', () => {
+    render(<Header {...defaultProps} />);
+    expect(screen.queryByTestId('wishlist-badge')).not.toBeInTheDocument();
+  });
+
+  it('shows wishlist badge with count', () => {
+    render(<Header {...defaultProps} wishlistCount={2} />);
+    expect(screen.getByTestId('wishlist-badge')).toHaveTextContent('2');
+  });
+
+  it('calls onWishlistClick', async () => {
+    const onWishlistClick = vi.fn();
+    render(<Header {...defaultProps} onWishlistClick={onWishlistClick} />);
+    await userEvent.click(screen.getByTestId('wishlist-button'));
+    expect(onWishlistClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('has correct wishlist aria-label', () => {
+    render(<Header {...defaultProps} wishlistCount={5} />);
+    expect(screen.getByTestId('wishlist-button')).toHaveAttribute('aria-label', 'Wishlist with 5 items');
+  });
+
+  it('uses singular for 1 wishlist item', () => {
+    render(<Header {...defaultProps} wishlistCount={1} />);
+    expect(screen.getByTestId('wishlist-button')).toHaveAttribute('aria-label', 'Wishlist with 1 item');
   });
 
   it('renders banner role', () => {
