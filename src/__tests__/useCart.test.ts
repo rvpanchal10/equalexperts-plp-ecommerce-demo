@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useCart } from '../hooks/useCart';
 import { createMockProduct } from './fixtures';
@@ -6,6 +6,10 @@ import { createMockProduct } from './fixtures';
 describe('useCart', () => {
   const product1 = createMockProduct({ id: 1, title: 'Product A', price: 10 });
   const product2 = createMockProduct({ id: 2, title: 'Product B', price: 25 });
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
   it('initialises with an empty cart', () => {
     const { result } = renderHook(() => useCart());
@@ -103,4 +107,5 @@ describe('useCart', () => {
     expect(result.current.totalPrice).toBe(45);
     expect(result.current.totalItems).toBe(3);
   });
+
 });
